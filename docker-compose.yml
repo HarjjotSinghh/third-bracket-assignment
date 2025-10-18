@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  mongo-container:
+    image: mongo:noble
+    #image: arm64v8/mongo # use this for apple silicon
+    environment:
+        - MONGO_INITDB_ROOT_USERNAME=mongo-admin
+        - MONGO_INITDB_ROOT_PASSWORD=Harjot_Was_Here
+    volumes:
+    - /Users/<USER>/mongodb/data:/data/db
+    ports:
+      - "27017:27017"
+    command: mongod
+    restart: unless-stopped%  
