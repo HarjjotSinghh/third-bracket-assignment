@@ -31,7 +31,7 @@ const LandingPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-rose-50 dark:from-slate-900 dark:to-neutral-900">
       {/* Header */}
       <header className="relative overflow-hidden">
-        <div className={cn("inset-0 bg-gradient-to-r from-orange-600/10 to-rose-600/10", scrolled ? 'fixed top-6 h-[88px] max-h-[88px] py-4 rounded-xl flex items-center justify-center bg-transparent' : 'absolute w-full h-full dark:bg-neutral-900/50 ')} />
+        <div className={cn("inset-0 bg-white/95", scrolled ? 'fixed top-6 h-[88px] max-h-[88px] py-4 rounded-xl flex items-center justify-center bg-transparent' : 'absolute w-full h-full dark:bg-neutral-900/50 ')} />
         {scrolled && (<div className='relative z-10 flex items-center justify-center'>
           <nav className={`fixed w-full top-6 h-[88px] max-h-[88px] z-50 flex items-center justify-between p-6 max-w-7xl mx-auto transition-all duration-300 ${scrolled ? 'py-4 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-lg rounded-xl' : ''}`}>
           <div className="flex items-center space-x-2">
@@ -400,7 +400,7 @@ const LandingPage: React.FC = () => {
           </div>
 
           <div className="border-t border-neutral-700 pt-8 text-center text-sm text-neutral-400">
-            <p>&copy; ${ new Date().getFullYear() } TaskFlow Pro. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} TaskFlow Pro. All rights reserved.</p>
           </div>
         </div>
       </footer>
