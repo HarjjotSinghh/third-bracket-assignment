@@ -60,8 +60,8 @@ app.get('/api/auth/check', async (req, res) => {
     });
 
     res.json({
-      authenticated: !!session.user,
-      user: session.user,
+      authenticated: !!session?.user,
+      user: session?.user,
     });
   } catch (error) {
     res.status(401).json({

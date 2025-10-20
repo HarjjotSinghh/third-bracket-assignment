@@ -4,7 +4,7 @@ import { memoryAdapter } from "better-auth/adapters/memory";
 // In-memory adapter for development
 // For production, you should use a proper database adapter
 export const auth = betterAuth({
-  database: memoryAdapter(),
+  database: memoryAdapter({}),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
