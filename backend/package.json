@@ -2,14 +2,14 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server-better-auth.js",
+  "main": "dist/server.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server-better-auth.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/server-better-auth.ts",
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "dev:official": "ts-node-dev --respawn --transpile-only src/server-official.ts",
     "dev:better-auth": "ts-node-dev --respawn --transpile-only src/server-better-auth.ts",
     "test": "jest",

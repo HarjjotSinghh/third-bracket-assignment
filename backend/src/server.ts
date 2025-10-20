@@ -95,46 +95,49 @@ app.use(
 app.use(helmet()); // Security headers
 app.use(morgan('combined')); // Logging
 
-// Handle preflight requests explicitly
-app.options('*', (req, res) => {
-  const origin = req.headers.origin;
-  const isAllowed = allowedOrigins.some((allowedOrigin) => {
-    if (typeof allowedOrigin === 'string') {
-      return origin === allowedOrigin;
-    }
-    if (allowedOrigin instanceof RegExp) {
-      return allowedOrigin.test(origin || '');
-    }
-    return false;
-  });
+// Handle preflight requests explicitly - using middleware instead of route
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    const origin = req.headers.origin;
+    const isAllowed = allowedOrigins.some((allowedOrigin) => {
+      if (typeof allowedOrigin === 'string') {
+        return origin === allowedOrigin;
+      }
+      if (allowedOrigin instanceof RegExp) {
+        return allowedOrigin.test(origin || '');
+      }
+      return false;
+    });
 
-  if (isAllowed) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header(
-      'Access-Control-Allow-Methods',
-      'GET, POST, PUT, DELETE, PATCH, OPTIONS'
-    );
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Content-Type, Authorization, X-Requested-With, Accept, Origin, User-Agent, Cache-Control, Pragma'
-    );
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header(
-      'Access-Control-Expose-Headers',
-      'Authorization, Set-Cookie, Access-Control-Allow-Credentials'
-    );
-    res.status(204).send();
+    if (isAllowed) {
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header(
+        'Access-Control-Allow-Methods',
+        'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+      );
+      res.header(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, X-Requested-With, Accept, Origin, User-Agent, Cache-Control, Pragma'
+      );
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.header(
+        'Access-Control-Expose-Headers',
+        'Authorization, Set-Cookie, Access-Control-Allow-Credentials'
+      );
+      res.status(204).send();
+    } else {
+      res.status(403).json({ error: 'CORS policy violation' });
+    }
   } else {
-    res.status(403).json({ error: 'CORS policy violation' });
+    next();
   }
 });
 
+// Better Auth handler must be mounted after CORS and before express.json()
+app.use('/api/auth/*splat', toNodeHandler(auth));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-
-// Better Auth handler must be mounted after CORS and express.json()
-// For Express.js v5, we need to use the splat parameter
-app.all('/api/auth/*splat', toNodeHandler(auth));
 
 // Health check endpoint
 app.get('/health', (req, res) => {

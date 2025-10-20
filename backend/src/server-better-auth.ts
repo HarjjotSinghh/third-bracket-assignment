@@ -11,19 +11,13 @@ import { auth } from './lib/auth-express';
 import taskRoutes from './routes/tasks';
 
 // Load environment variables
-dotenv.config();
+dotenv.config({ path: ['.env', '../.env', '../../.env'] });
 
 // Connect to database
 connectDB();
 
 const app = express();
 const server = createServer(app);
-
-// Middleware
-app.use(helmet()); // Security headers
-app.use(morgan('combined')); // Logging
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
 const allowedOrigins = [
@@ -81,6 +75,12 @@ app.use(
     exposedHeaders: ['Authorization'],
   })
 );
+
+// Middleware
+app.use(helmet()); // Security headers
+app.use(morgan('combined')); // Logging
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
