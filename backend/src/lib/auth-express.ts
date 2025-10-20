@@ -61,6 +61,7 @@ export const auth = betterAuth({
     crossSubDomainCookies: {
       enabled: false,
     },
+    useSecureCookies: process.env.NODE_ENV === 'production',
   },
 
   // Social providers (commented out for now)

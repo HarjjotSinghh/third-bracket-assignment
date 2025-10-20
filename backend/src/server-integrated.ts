@@ -11,7 +11,7 @@ import { auth, authHandler } from './lib/auth-express';
 import taskRoutes from './routes/tasks';
 
 // Load environment variables
-dotenv.config({ path: '.env.better-auth' });
+dotenv.config({ path: ['.env', '../.env', '../../.env'] });
 
 // Connect to database (keeping existing MongoDB connection)
 connectDB();
