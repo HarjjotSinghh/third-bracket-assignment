@@ -51,6 +51,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Use Better Auth's useSession hook
   const { data: session, isPending, error } = authClient.useSession();
 
+  // Debug logging for production issues
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'production') {
+      console.log('Better Auth Session Debug:', {
+        session,
+        isPending,
+        error,
+        hasUser: !!session?.user,
+        authClientBaseURL: import.meta.env.VITE_BETTER_AUTH_API_BASE_URL,
+      });
+    }
+  }, [session, isPending, error]);
+
   const user = session?.user || null;
   const isLoading = isPending;
   const isAuthenticated = !!user;
