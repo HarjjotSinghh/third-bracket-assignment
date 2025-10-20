@@ -47,7 +47,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/BetterAuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -55,8 +54,10 @@ import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Loader2, UserPlus, Mail, Lock, User } from 'lucide-react';
+import { authClient } from "../../lib/auth-client";
 var Register = function () {
-    var _a = useAuth(), register = _a.register, isLoading = _a.isLoading, isAuthenticated = _a.isAuthenticated, error = _a.error;
+    // Use better-auth hooks
+    var _a = authClient.useSession(), session = _a.data, isPending = _a.isPending, error = _a.error, isRefetching = _a.isRefetching, refetch = _a.refetch;
     var navigate = useNavigate();
     var _b = useState({
         name: '',
@@ -67,17 +68,16 @@ var Register = function () {
     var _c = useState(null), validationError = _c[0], setValidationError = _c[1];
     // Redirect authenticated users to dashboard
     useEffect(function () {
-        if (isAuthenticated) {
+        if (session === null || session === void 0 ? void 0 : session.user) {
             navigate('/dashboard');
         }
-    }, [isAuthenticated, navigate]);
+    }, [session === null || session === void 0 ? void 0 : session.user, navigate]);
     var handleChange = function (e) {
         var _a = e.target, name = _a.name, value = _a.value;
         setFormData(function (prev) {
             var _a;
             return (__assign(__assign({}, prev), (_a = {}, _a[name] = value, _a)));
         });
-        // Clear validation error when user changes input
         if (validationError) {
             setValidationError(null);
         }
@@ -94,7 +94,7 @@ var Register = function () {
         return true;
     };
     var handleSubmit = function (e) { return __awaiter(void 0, void 0, void 0, function () {
-        var error_1;
+        var err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -105,22 +105,28 @@ var Register = function () {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, register(formData.name, formData.email, formData.password)];
+                    return [4 /*yield*/, authClient.signUp.email({
+                            name: formData.name,
+                            email: formData.email,
+                            password: formData.password,
+                        })];
                 case 2:
                     _a.sent();
+                    refetch(); // Get the latest session after registration
                     return [3 /*break*/, 4];
                 case 3:
-                    error_1 = _a.sent();
-                    console.error('Registration error:', error_1);
+                    err_1 = _a.sent();
+                    // error is handled by error from useSession, but log for dev
+                    console.error('Registration error:', err_1);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
             }
         });
     }); };
-    return (_jsx("div", { className: "min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-rose-100 p-4", children: _jsx("div", { className: "w-full max-w-md", children: _jsxs(Card, { className: "shadow-xl border-0", children: [_jsxs(CardHeader, { className: "space-y-1 text-center", children: [_jsx("div", { className: "flex justify-center mb-4", children: _jsx("div", { className: "w-16 h-16 bg-gradient-to-br from-rose-500 to-orange-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg", children: "\uD83D\uDCCB" }) }), _jsx(CardTitle, { className: "text-2xl font-bold", children: "Create Account" }), _jsx(CardDescription, { children: "Join TaskFlow to manage your tasks efficiently" })] }), _jsxs(CardContent, { className: "space-y-4", children: [_jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [_jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "name", className: "text-sm font-medium", children: "Full Name" }), _jsxs("div", { className: "relative", children: [_jsx(User, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "name", name: "name", type: "text", placeholder: "Enter your full name", value: formData.name, onChange: handleChange, required: true, disabled: isLoading, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "email", className: "text-sm font-medium", children: "Email Address" }), _jsxs("div", { className: "relative", children: [_jsx(Mail, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "email", name: "email", type: "email", placeholder: "Enter your email", value: formData.email, onChange: handleChange, required: true, disabled: isLoading, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "password", className: "text-sm font-medium", children: "Password" }), _jsxs("div", { className: "relative", children: [_jsx(Lock, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "password", name: "password", type: "password", placeholder: "Create a password", value: formData.password, onChange: handleChange, required: true, disabled: isLoading, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "confirmPassword", className: "text-sm font-medium", children: "Confirm Password" }), _jsxs("div", { className: "relative", children: [_jsx(Lock, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "confirmPassword", name: "confirmPassword", type: "password", placeholder: "Confirm your password", value: formData.confirmPassword, onChange: handleChange, required: true, disabled: isLoading, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), (error || validationError) && (_jsx(Alert, { variant: "destructive", children: _jsx(AlertDescription, { children: validationError || error }) })), _jsx(Button, { type: "submit", disabled: !formData.name ||
+    return (_jsx("div", { className: "min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-rose-100 p-4", children: _jsx("div", { className: "w-full max-w-md", children: _jsxs(Card, { className: "shadow-xl border-0", children: [_jsxs(CardHeader, { className: "space-y-1 text-center", children: [_jsx("div", { className: "flex justify-center mb-4", children: _jsx("div", { className: "w-16 h-16 bg-gradient-to-br from-rose-500 to-orange-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg", children: "\uD83D\uDCCB" }) }), _jsx(CardTitle, { className: "text-2xl font-bold", children: "Create Account" }), _jsx(CardDescription, { children: "Join TaskFlow to manage your tasks efficiently" })] }), _jsxs(CardContent, { className: "space-y-4", children: [_jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [_jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "name", className: "text-sm font-medium", children: "Full Name" }), _jsxs("div", { className: "relative", children: [_jsx(User, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "name", name: "name", type: "text", placeholder: "Enter your full name", value: formData.name, onChange: handleChange, required: true, disabled: isPending || isRefetching, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "email", className: "text-sm font-medium", children: "Email Address" }), _jsxs("div", { className: "relative", children: [_jsx(Mail, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "email", name: "email", type: "email", placeholder: "Enter your email", value: formData.email, onChange: handleChange, required: true, disabled: isPending || isRefetching, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "password", className: "text-sm font-medium", children: "Password" }), _jsxs("div", { className: "relative", children: [_jsx(Lock, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "password", name: "password", type: "password", placeholder: "Create a password", value: formData.password, onChange: handleChange, required: true, disabled: isPending || isRefetching, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "confirmPassword", className: "text-sm font-medium", children: "Confirm Password" }), _jsxs("div", { className: "relative", children: [_jsx(Lock, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "confirmPassword", name: "confirmPassword", type: "password", placeholder: "Confirm your password", value: formData.confirmPassword, onChange: handleChange, required: true, disabled: isPending || isRefetching, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), (error || validationError) && (_jsx(Alert, { variant: "destructive", children: _jsx(AlertDescription, { children: (error && typeof error === "object" && "message" in error ? error.message : error) }) })), _jsx(Button, { type: "submit", disabled: !formData.name ||
                                             !formData.email ||
                                             !formData.password ||
                                             !formData.confirmPassword ||
-                                            isLoading, className: "w-full transition-all duration-200 bg-gradient-to-r from-rose-500 to-orange-600 hover:from-rose-600 hover:to-orange-700", children: isLoading ? (_jsxs(_Fragment, { children: [_jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }), "Creating Account..."] })) : (_jsxs(_Fragment, { children: [_jsx(UserPlus, { className: "mr-2 h-4 w-4" }), "Create Account"] })) })] }), _jsx("div", { className: "text-center pt-4 border-t", children: _jsxs("p", { className: "text-sm text-gray-600", children: ["Already have an account?", ' ', _jsx(Link, { to: "/login", className: "font-medium text-orange-600 hover:text-orange-500 transition-colors duration-200", children: "Sign in" })] }) })] })] }) }) }));
+                                            isPending || isRefetching, className: "w-full transition-all duration-200 bg-gradient-to-r from-rose-500 to-orange-600 hover:from-rose-600 hover:to-orange-700", children: isPending || isRefetching ? (_jsxs(_Fragment, { children: [_jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }), isPending ? "Creating Account..." : "Processing..."] })) : (_jsxs(_Fragment, { children: [_jsx(UserPlus, { className: "mr-2 h-4 w-4" }), "Create Account"] })) })] }), _jsx("div", { className: "text-center pt-4 border-t", children: _jsxs("p", { className: "text-sm text-gray-600", children: ["Already have an account?", ' ', _jsx(Link, { to: "/login", className: "font-medium text-orange-600 hover:text-orange-500 transition-colors duration-200", children: "Sign in" })] }) })] })] }) }) }));
 };
 export default Register;

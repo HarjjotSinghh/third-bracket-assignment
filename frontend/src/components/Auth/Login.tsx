@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../context/BetterAuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
-import { Loader2, LogIn, Mail, Lock } from 'lucide-react';
+import { Loader2, LogIn, Mail, Lock, RefreshCw } from 'lucide-react';
+import { authClient } from '../../lib/auth-client';
 
 interface FormData {
   email: string;
@@ -14,19 +14,20 @@ interface FormData {
 }
 
 const Login: React.FC = () => {
-  const { login, isLoading, isAuthenticated, error } = useAuth();
+  const { data: session, isPending, error, isRefetching, refetch } = authClient.useSession();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
   });
+  const [rememberMe, setRememberMe] = useState<boolean>(true);
 
   // Redirect authenticated users to dashboard
   useEffect(() => {
-    if (isAuthenticated) {
+    if (session?.user) {
       navigate('/dashboard');
     }
-  }, [isAuthenticated, navigate]);
+  }, [session?.user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -36,6 +37,11 @@ const Login: React.FC = () => {
     }));
   };
 
+  // Handle remember me change
+  const handleRememberMeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRememberMe(e.target.checked);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
@@ -43,9 +49,18 @@ const Login: React.FC = () => {
     }
 
     try {
-      await login(formData.email, formData.password);
+      await authClient.signIn.email(
+        {
+          email: formData.email,
+          rememberMe,
+          password: formData.password,
+        }
+      );
     } catch (error) {
       console.error('Login error:', error);
+    } finally {
+      // After attempt, refetch session to use the refetch function
+      refetch();
     }
   };
 
@@ -80,7 +95,7 @@ const Login: React.FC = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    disabled={isLoading}
+                    disabled={isPending || isRefetching}
                     className="pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
@@ -100,29 +115,57 @@ const Login: React.FC = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    disabled={isLoading}
+                    disabled={isPending || isRefetching}
                     className="pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
               </div>
 
+              <div className="flex items-center">
+                <input
+                  id="rememberMe"
+                  name="rememberMe"
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={handleRememberMeChange}
+                  disabled={isPending || isRefetching}
+                  className="mr-2 accent-orange-500"
+                />
+                <Label htmlFor="rememberMe" className="text-sm select-none cursor-pointer">
+                  Remember me
+                </Label>
+                {/* Add a manual refetch button as well to demonstrate use */}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="ml-auto flex items-center"
+                  onClick={() => refetch()}
+                  disabled={isRefetching}
+                  tabIndex={-1}
+                >
+                  <RefreshCw className={`h-4 w-4 mr-1 ${isRefetching ? 'animate-spin' : ''}`} />
+                  {isRefetching ? 'Refreshing...' : 'Refresh session'}
+                </Button>
+              </div>
+
               {error && (
                 <Alert variant="destructive">
                   <AlertDescription>
-                    {error}
+                    {error?.message}
                   </AlertDescription>
                 </Alert>
               )}
 
               <Button
                 type="submit"
-                disabled={!formData.email || !formData.password || isLoading}
+                disabled={!formData.email || !formData.password || isPending || isRefetching}
                 className="w-full transition-all duration-200 bg-gradient-to-r from-orange-500 to-rose-600 hover:from-orange-600 hover:to-rose-700"
               >
-                {isLoading ? (
+                {isPending || isRefetching ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing In...
+                    {isPending ? 'Signing In...' : 'Processing...'}
                   </>
                 ) : (
                   <>

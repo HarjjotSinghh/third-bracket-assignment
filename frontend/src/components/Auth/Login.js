@@ -47,33 +47,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/BetterAuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
-import { Loader2, LogIn, Mail, Lock } from 'lucide-react';
+import { Loader2, LogIn, Mail, Lock, RefreshCw } from 'lucide-react';
+import { authClient } from '../../lib/auth-client';
 var Login = function () {
-    var _a = useAuth(), login = _a.login, isLoading = _a.isLoading, isAuthenticated = _a.isAuthenticated, error = _a.error;
+    var _a = authClient.useSession(), session = _a.data, isPending = _a.isPending, error = _a.error, isRefetching = _a.isRefetching, refetch = _a.refetch;
     var navigate = useNavigate();
     var _b = useState({
         email: '',
         password: '',
     }), formData = _b[0], setFormData = _b[1];
+    var _c = useState(true), rememberMe = _c[0], setRememberMe = _c[1];
     // Redirect authenticated users to dashboard
     useEffect(function () {
-        if (isAuthenticated) {
+        if (session === null || session === void 0 ? void 0 : session.user) {
             navigate('/dashboard');
         }
-    }, [isAuthenticated, navigate]);
+    }, [session === null || session === void 0 ? void 0 : session.user, navigate]);
     var handleChange = function (e) {
         var _a = e.target, name = _a.name, value = _a.value;
         setFormData(function (prev) {
             var _a;
             return (__assign(__assign({}, prev), (_a = {}, _a[name] = value, _a)));
         });
+    };
+    // Handle remember me change
+    var handleRememberMeChange = function (e) {
+        setRememberMe(e.target.checked);
     };
     var handleSubmit = function (e) { return __awaiter(void 0, void 0, void 0, function () {
         var error_1;
@@ -86,19 +91,27 @@ var Login = function () {
                     }
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, login(formData.email, formData.password)];
+                    _a.trys.push([1, 3, 4, 5]);
+                    return [4 /*yield*/, authClient.signIn.email({
+                            email: formData.email,
+                            rememberMe: rememberMe,
+                            password: formData.password,
+                        })];
                 case 2:
                     _a.sent();
-                    return [3 /*break*/, 4];
+                    return [3 /*break*/, 5];
                 case 3:
                     error_1 = _a.sent();
                     console.error('Login error:', error_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 4:
+                    // After attempt, refetch session to use the refetch function
+                    refetch();
+                    return [7 /*endfinally*/];
+                case 5: return [2 /*return*/];
             }
         });
     }); };
-    return (_jsx("div", { className: "min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-rose-100 p-4", children: _jsx("div", { className: "w-full max-w-md", children: _jsxs(Card, { className: "shadow-xl border-0", children: [_jsxs(CardHeader, { className: "space-y-1 text-center", children: [_jsx("div", { className: "flex justify-center mb-4", children: _jsx("div", { className: "w-16 h-16 bg-gradient-to-br from-orange-500 to-rose-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg", children: "\uD83D\uDCCB" }) }), _jsx(CardTitle, { className: "text-2xl font-bold", children: "Welcome Back" }), _jsx(CardDescription, { children: "Sign in to your TaskFlow account" })] }), _jsxs(CardContent, { className: "space-y-4", children: [_jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [_jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "email", className: "text-sm font-medium", children: "Email Address" }), _jsxs("div", { className: "relative", children: [_jsx(Mail, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "email", name: "email", type: "email", placeholder: "Enter your email", value: formData.email, onChange: handleChange, required: true, disabled: isLoading, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "password", className: "text-sm font-medium", children: "Password" }), _jsxs("div", { className: "relative", children: [_jsx(Lock, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "password", name: "password", type: "password", placeholder: "Enter your password", value: formData.password, onChange: handleChange, required: true, disabled: isLoading, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), error && (_jsx(Alert, { variant: "destructive", children: _jsx(AlertDescription, { children: error }) })), _jsx(Button, { type: "submit", disabled: !formData.email || !formData.password || isLoading, className: "w-full transition-all duration-200 bg-gradient-to-r from-orange-500 to-rose-600 hover:from-orange-600 hover:to-rose-700", children: isLoading ? (_jsxs(_Fragment, { children: [_jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }), "Signing In..."] })) : (_jsxs(_Fragment, { children: [_jsx(LogIn, { className: "mr-2 h-4 w-4" }), "Sign In"] })) })] }), _jsx("div", { className: "text-center pt-4 border-t", children: _jsxs("p", { className: "text-sm text-gray-600", children: ["Don't have an account?", ' ', _jsx(Link, { to: "/register", className: "font-medium text-orange-600 hover:text-orange-500 transition-colors duration-200", children: "Create account" })] }) })] })] }) }) }));
+    return (_jsx("div", { className: "min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-rose-100 p-4", children: _jsx("div", { className: "w-full max-w-md", children: _jsxs(Card, { className: "shadow-xl border-0", children: [_jsxs(CardHeader, { className: "space-y-1 text-center", children: [_jsx("div", { className: "flex justify-center mb-4", children: _jsx("div", { className: "w-16 h-16 bg-gradient-to-br from-orange-500 to-rose-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg", children: "\uD83D\uDCCB" }) }), _jsx(CardTitle, { className: "text-2xl font-bold", children: "Welcome Back" }), _jsx(CardDescription, { children: "Sign in to your TaskFlow account" })] }), _jsxs(CardContent, { className: "space-y-4", children: [_jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [_jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "email", className: "text-sm font-medium", children: "Email Address" }), _jsxs("div", { className: "relative", children: [_jsx(Mail, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "email", name: "email", type: "email", placeholder: "Enter your email", value: formData.email, onChange: handleChange, required: true, disabled: isPending || isRefetching, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "password", className: "text-sm font-medium", children: "Password" }), _jsxs("div", { className: "relative", children: [_jsx(Lock, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" }), _jsx(Input, { id: "password", name: "password", type: "password", placeholder: "Enter your password", value: formData.password, onChange: handleChange, required: true, disabled: isPending || isRefetching, className: "pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500" })] })] }), _jsxs("div", { className: "flex items-center", children: [_jsx("input", { id: "rememberMe", name: "rememberMe", type: "checkbox", checked: rememberMe, onChange: handleRememberMeChange, disabled: isPending || isRefetching, className: "mr-2 accent-orange-500" }), _jsx(Label, { htmlFor: "rememberMe", className: "text-sm select-none cursor-pointer", children: "Remember me" }), _jsxs(Button, { type: "button", variant: "ghost", size: "sm", className: "ml-auto flex items-center", onClick: function () { return refetch(); }, disabled: isRefetching, tabIndex: -1, children: [_jsx(RefreshCw, { className: "h-4 w-4 mr-1 ".concat(isRefetching ? 'animate-spin' : '') }), isRefetching ? 'Refreshing...' : 'Refresh session'] })] }), error && (_jsx(Alert, { variant: "destructive", children: _jsx(AlertDescription, { children: error === null || error === void 0 ? void 0 : error.message }) })), _jsx(Button, { type: "submit", disabled: !formData.email || !formData.password || isPending || isRefetching, className: "w-full transition-all duration-200 bg-gradient-to-r from-orange-500 to-rose-600 hover:from-orange-600 hover:to-rose-700", children: isPending || isRefetching ? (_jsxs(_Fragment, { children: [_jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }), isPending ? 'Signing In...' : 'Processing...'] })) : (_jsxs(_Fragment, { children: [_jsx(LogIn, { className: "mr-2 h-4 w-4" }), "Sign In"] })) })] }), _jsx("div", { className: "text-center pt-4 border-t", children: _jsxs("p", { className: "text-sm text-gray-600", children: ["Don't have an account?", ' ', _jsx(Link, { to: "/register", className: "font-medium text-orange-600 hover:text-orange-500 transition-colors duration-200", children: "Create account" })] }) })] })] }) }) }));
 };
 export default Login;

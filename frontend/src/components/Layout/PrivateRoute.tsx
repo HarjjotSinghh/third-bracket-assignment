@@ -1,16 +1,19 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../context/BetterAuthContext';
 import { Loader2 } from 'lucide-react';
+import { authClient } from '../../lib/auth-client';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  // Use better-auth hook from authClient (like Login/Register)
+  const { data: session, isPending, isRefetching } = authClient.useSession();
 
-  // Show loading spinner while checking authentication
+  const isLoading = isPending || isRefetching;
+  const isAuthenticated = !!session?.user;
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -21,13 +24,10 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
       </div>
     );
   }
-
-  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // Render children if authenticated
   return <>{children}</>;
 };
 

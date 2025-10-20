@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../context/BetterAuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -7,6 +6,7 @@ import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Loader2, UserPlus, Mail, Lock, User } from 'lucide-react';
+import { authClient } from "../../lib/auth-client";
 
 interface FormData {
   name: string;
@@ -16,7 +16,8 @@ interface FormData {
 }
 
 const Register: React.FC = () => {
-  const { register, isLoading, isAuthenticated, error } = useAuth();
+  // Use better-auth hooks
+  const { data: session, isPending, error, isRefetching, refetch } = authClient.useSession();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -28,10 +29,10 @@ const Register: React.FC = () => {
 
   // Redirect authenticated users to dashboard
   useEffect(() => {
-    if (isAuthenticated) {
+    if (session?.user) {
       navigate('/dashboard');
     }
-  }, [isAuthenticated, navigate]);
+  }, [session?.user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,7 +40,6 @@ const Register: React.FC = () => {
       ...prev,
       [name]: value
     }));
-    // Clear validation error when user changes input
     if (validationError) {
       setValidationError(null);
     }
@@ -65,9 +65,15 @@ const Register: React.FC = () => {
     }
 
     try {
-      await register(formData.name, formData.email, formData.password);
-    } catch (error) {
-      console.error('Registration error:', error);
+      await authClient.signUp.email({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+      refetch(); // Get the latest session after registration
+    } catch (err) {
+      // error is handled by error from useSession, but log for dev
+      console.error('Registration error:', err);
     }
   };
 
@@ -102,7 +108,7 @@ const Register: React.FC = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    disabled={isLoading}
+                    disabled={isPending || isRefetching}
                     className="pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
@@ -122,7 +128,7 @@ const Register: React.FC = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    disabled={isLoading}
+                    disabled={isPending || isRefetching}
                     className="pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
@@ -142,7 +148,7 @@ const Register: React.FC = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    disabled={isLoading}
+                    disabled={isPending || isRefetching}
                     className="pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
@@ -162,7 +168,7 @@ const Register: React.FC = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
-                    disabled={isLoading}
+                    disabled={isPending || isRefetching}
                     className="pl-10 transition-all duration-200 focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
@@ -171,7 +177,7 @@ const Register: React.FC = () => {
               {(error || validationError) && (
                 <Alert variant="destructive">
                   <AlertDescription>
-                    {validationError || error}
+                    {(error && typeof error === "object" && "message" in error ? (error.message as unknown as string) : error as unknown as string)}
                   </AlertDescription>
                 </Alert>
               )}
@@ -183,14 +189,14 @@ const Register: React.FC = () => {
                   !formData.email ||
                   !formData.password ||
                   !formData.confirmPassword ||
-                  isLoading
+                  isPending || isRefetching
                 }
                 className="w-full transition-all duration-200 bg-gradient-to-r from-rose-500 to-orange-600 hover:from-rose-600 hover:to-orange-700"
               >
-                {isLoading ? (
+                {isPending || isRefetching ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating Account...
+                    {isPending ? "Creating Account..." : "Processing..."}
                   </>
                 ) : (
                   <>

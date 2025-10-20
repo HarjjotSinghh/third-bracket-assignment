@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { jsx as _jsx } from "react/jsx-runtime";
-import { createContext, useContext } from 'react';
+import React, { createContext, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { authClient } from '../lib/auth-client';
@@ -53,6 +53,18 @@ export var AuthProvider = function (_a) {
     var navigate = useNavigate();
     // Use Better Auth's useSession hook
     var _b = authClient.useSession(), session = _b.data, isPending = _b.isPending, error = _b.error;
+    // Debug logging for production issues
+    React.useEffect(function () {
+        if (process.env.NODE_ENV === 'production') {
+            console.log('Better Auth Session Debug:', {
+                session: session,
+                isPending: isPending,
+                error: error,
+                hasUser: !!(session === null || session === void 0 ? void 0 : session.user),
+                authClientBaseURL: import.meta.env.VITE_BETTER_AUTH_API_BASE_URL,
+            });
+        }
+    }, [session, isPending, error]);
     var user = (session === null || session === void 0 ? void 0 : session.user) || null;
     var isLoading = isPending;
     var isAuthenticated = !!user;
