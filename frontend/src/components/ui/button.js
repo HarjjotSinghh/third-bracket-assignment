@@ -53,4 +53,5 @@ function Button(_a) {
     var Comp = asChild ? Slot : "button";
     return (_jsx(Comp, __assign({ "data-slot": "button", className: cn(buttonVariants({ variant: variant, size: size, className: className })) }, props)));
 }
+// eslint-disable-next-line
 export { Button, buttonVariants };

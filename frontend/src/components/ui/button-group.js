@@ -49,4 +49,6 @@ function ButtonGroupSeparator(_a) {
     var className = _a.className, _b = _a.orientation, orientation = _b === void 0 ? "vertical" : _b, props = __rest(_a, ["className", "orientation"]);
     return (_jsx(Separator, __assign({ "data-slot": "button-group-separator", orientation: orientation, className: cn("bg-input relative !m-0 self-stretch data-[orientation=vertical]:h-auto", className) }, props)));
 }
-export { ButtonGroup, ButtonGroupSeparator, ButtonGroupText, buttonGroupVariants, };
+export { ButtonGroup, ButtonGroupSeparator, ButtonGroupText, 
+// eslint-disable-next-line
+buttonGroupVariants, };
