@@ -150,8 +150,10 @@ app.get('/health', (req, res) => {
 
 // API routes
 import taskRoutes from './routes/tasks';
+import authRoutes from './routes/auth';
 
 app.use('/api/tasks', taskRoutes);
+app.use('/api/auth', authRoutes);
 
 // 404 handler
 app.use(notFound);
