@@ -8,12 +8,12 @@ import {
   getTaskStats,
 } from '../controllers/taskController';
 import { validate, validateTaskCreation, validateTaskUpdate, validateTaskQuery, validateObjectId } from '../middleware/validation';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateBetterAuth } from '../middleware/betterAuth';
 
 const router = express.Router();
 
-// Apply authentication middleware to all task routes
-router.use(authenticateToken);
+// Apply Better Auth authentication middleware to all task routes
+router.use(authenticateBetterAuth);
 
 // Create a new task
 router.post('/', validate(validateTaskCreation), createTask);

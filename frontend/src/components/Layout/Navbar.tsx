@@ -23,11 +23,11 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between px-4">
+    <nav className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ">
+      <div className="container flex h-16 items-center justify-between px-4 mx-auto">
         {/* Brand */}
         <Link to="/" className="flex items-center space-x-3 group">
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-rose-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-md group-hover:shadow-lg transition-all duration-200 group-hover:scale-105">
+          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-rose-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-md group- transition-all duration-200 group-hover:scale-105">
             📋
           </div>
           <div className="flex flex-col">
@@ -58,7 +58,7 @@ const Navbar: React.FC = () => {
                   variant="ghost"
                   className="relative h-10 w-10 rounded-full"
                 >
-                  <Avatar className="h-10 w-10 bg-gradient-to-br from-orange-500 to-rose-600 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
+                  <Avatar className="h-10 w-10 bg-gradient-to-br from-orange-500 to-rose-600 shadow-md  transition-all duration-200">
                     <AvatarFallback className="text-white font-bold">
                       {user.name.charAt(0).toUpperCase()}
                     </AvatarFallback>
@@ -113,14 +113,14 @@ const Navbar: React.FC = () => {
               variant="outline"
               size="sm"
               asChild
-              className="transition-all duration-200 hover:scale-105"
+                className="transition-all duration-200"
             >
               <Link to="/login">Login</Link>
             </Button>
             <Button
               size="sm"
               asChild
-              className="bg-gradient-to-r from-orange-500 to-rose-600 hover:from-orange-600 hover:to-rose-700 transition-all duration-200 hover:scale-105"
+                className="bg-gradient-to-r from-orange-500 to-rose-600 hover:from-orange-600 hover:to-rose-700 transition-all duration-200"
             >
               <Link to="/register">Register</Link>
             </Button>

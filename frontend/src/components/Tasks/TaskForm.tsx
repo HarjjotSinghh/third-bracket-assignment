@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { taskAPI } from '../../services/api';
+import { taskAPI } from '../../services/betterAuthApi';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';

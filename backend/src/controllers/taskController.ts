@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Task, { ITask } from '../models/Task';
-import { AuthRequest } from '../middleware/auth';
+import { BetterAuthRequest } from '../middleware/betterAuth';
 import mongoose from 'mongoose';
 
 interface CreateTaskRequest extends Request {
@@ -32,10 +32,13 @@ interface TaskQuery {
 }
 
 // Create a new task
-export const createTask = async (req: CreateTaskRequest, res: Response): Promise<void> => {
+export const createTask = async (
+  req: CreateTaskRequest,
+  res: Response
+): Promise<void> => {
   try {
     const { title, description, priority, status, dueDate } = req.body;
-    const userId = (req as AuthRequest).user!._id;
+    const userId = (req as BetterAuthRequest).user!.id;
 
     const taskData: any = {
       title,
@@ -92,7 +95,7 @@ export const createTask = async (req: CreateTaskRequest, res: Response): Promise
 // Get all tasks for the authenticated user with filtering and pagination
 export const getTasks = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = (req as AuthRequest).user!._id;
+    const userId = (req as BetterAuthRequest).user!.id;
     const {
       status,
       priority,
@@ -133,7 +136,7 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
       Task.countDocuments(query),
     ]);
 
-    const formattedTasks = tasks.map(task => ({
+    const formattedTasks = tasks.map((task) => ({
       id: task._id,
       title: task.title,
       description: task.description,
@@ -169,10 +172,13 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
 };
 
 // Get a specific task by ID
-export const getTaskById = async (req: Request, res: Response): Promise<void> => {
+export const getTaskById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { id } = req.params;
-    const userId = (req as AuthRequest).user!._id;
+    const userId = (req as BetterAuthRequest).user!.id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(404).json({
@@ -226,10 +232,13 @@ export const getTaskById = async (req: Request, res: Response): Promise<void> =>
 };
 
 // Update a task
-export const updateTask = async (req: UpdateTaskRequest, res: Response): Promise<void> => {
+export const updateTask = async (
+  req: UpdateTaskRequest,
+  res: Response
+): Promise<void> => {
   try {
     const { id } = req.params;
-    const userId = (req as AuthRequest).user!._id;
+    const userId = (req as BetterAuthRequest).user!.id;
     const updateData = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -258,14 +267,15 @@ export const updateTask = async (req: UpdateTaskRequest, res: Response): Promise
       updateObj.status = updateData.status;
     }
     if (updateData.dueDate !== undefined) {
-      updateObj.dueDate = updateData.dueDate ? new Date(updateData.dueDate) : null;
+      updateObj.dueDate = updateData.dueDate
+        ? new Date(updateData.dueDate)
+        : null;
     }
 
-    const task = await Task.findOneAndUpdate(
-      { _id: id, userId },
-      updateObj,
-      { new: true, runValidators: true }
-    ).lean();
+    const task = await Task.findOneAndUpdate({ _id: id, userId }, updateObj, {
+      new: true,
+      runValidators: true,
+    }).lean();
 
     if (!task) {
       res.status(404).json({
@@ -307,10 +317,13 @@ export const updateTask = async (req: UpdateTaskRequest, res: Response): Promise
 };
 
 // Delete a task
-export const deleteTask = async (req: Request, res: Response): Promise<void> => {
+export const deleteTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { id } = req.params;
-    const userId = (req as AuthRequest).user!._id;
+    const userId = (req as BetterAuthRequest).user!.id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(404).json({
@@ -355,7 +368,7 @@ export const deleteTask = async (req: Request, res: Response): Promise<void> => 
 // Get task statistics for dashboard
 export const getTaskStats = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = (req as AuthRequest).user!._id;
+    const userId = (req as BetterAuthRequest).user!.id;
 
     const [
       totalTasks,

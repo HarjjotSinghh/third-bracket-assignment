@@ -1,13 +1,19 @@
 {
   // "files": [],
   "include": ["src", "styled-system"],
-  "compilerOptions": {"esModuleInterop": true, "skipLibCheck": true,
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "jsx": "react-jsx",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noErrorTruncation": true
   }
 }

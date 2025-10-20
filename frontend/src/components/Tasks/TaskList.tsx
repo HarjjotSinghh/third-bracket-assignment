@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { taskAPI } from '../../services/api';
+import { taskAPI } from '../../services/betterAuthApi';
 import TaskItem from './TaskItem';
 import TaskForm from './TaskForm';
 import TaskFilters from './TaskFilters';
@@ -138,7 +138,7 @@ const TaskList: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
+    <div className="min-h-screen bg-background p-6 md:p-8 pt-20 md:pt-24">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -198,7 +198,7 @@ const TaskList: React.FC = () => {
               <div className="h-4 w-4 text-muted-foreground">✅</div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
+              <div className="text-2xl font-bold text-rose-600">{stats.completed}</div>
               <p className="text-xs text-muted-foreground">Done</p>
             </CardContent>
           </Card>

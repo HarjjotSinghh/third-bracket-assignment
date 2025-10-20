@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { taskAPI } from '../../services/api';
+import { taskAPI } from '../../services/betterAuthApi';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -95,7 +95,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onEdit, onDelete, onUpdate })
 
   return (
     <Card className={cn(
-      "transition-all duration-200 hover:shadow-md",
+      "transition-all duration-200 ",
       isOverdue && "border-2 border-red-500 shadow-red-100",
       task?.status === 'Completed' && "bg-muted/50"
     )}>

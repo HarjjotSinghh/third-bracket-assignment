@@ -1,27 +1,34 @@
 import { betterAuth } from "better-auth";
-import { memoryAdapter } from "better-auth/adapters/memory";
-import { express } from "better-auth/adapters/express";
+import { mongodbAdapter } from 'better-auth/adapters/mongodb';
+import { MongoClient } from 'mongodb';
+import { config } from 'dotenv';
 
-// In-memory adapter for development
-// For production, replace with proper database adapter
+config({ path: ['./.env', './../.env', './../../.env', './../../../.env'] });
+
+// Create a new MongoDB client for Better Auth
+const client = new MongoClient(process.env.MONGODB_URI!);
+const db = client.db();
+
+// MongoDB adapter using dedicated connection
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
-  secret: process.env.BETTER_AUTH_SECRET || "better-auth-secret-change-in-production",
+  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000/api/auth',
+  secret:
+    process.env.BETTER_AUTH_SECRET || 'better-auth-secret-change-in-production',
+  trustedOrigins: [
+    // Development URLs
+    'http://localhost:5173', // Vite dev server (default)
+    'http://localhost:5174', // Vite dev server (alternative port)
+    'http://localhost:4173', // Vite production preview
+    'http://localhost:3000', // Backend dev server
+    'http://localhost:3001', // Alternative backend port
 
-  database: memoryAdapter({
-    // Customize the user schema to match our needs
-    user: {
-      additionalFields: {
-        name: {
-          type: "string",
-          required: true,
-        },
-        emailVerified: {
-          type: "boolean",
-          default: false,
-        },
-      },
-    },
+    // Production URLs from environment
+    process.env.FRONTEND_URL,
+    process.env.FRONTEND_PROD_URL,
+  ].filter((origin): origin is string => typeof origin === 'string'), // Remove any undefined values and ensure only strings
+
+  database: mongodbAdapter(db, {
+    client,
   }),
 
   emailAndPassword: {
@@ -64,12 +71,6 @@ export const auth = betterAuth({
     //   clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     // },
   },
-
-  // Plugins
-  plugins: [
-    // Add express adapter
-    express(),
-  ],
 });
 
 // Export auth handler for Express

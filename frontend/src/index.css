@@ -102,6 +102,56 @@
   }
 }
 
+@keyframes hero-gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-5px) rotate(-1deg);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(241, 137, 99, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(241, 170, 99, 0.4);
+  }
+}
+
+.hero-gradient {
+  background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+  background-size: 400% 400%;
+  animation: hero-gradient 15s ease infinite;
+}
+
+.hero-gradient-slow {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: 200% 200%;
+  animation: hero-gradient 20s ease infinite;
+}
+
+.float-animation {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
 .icon-rotate {
   display: inline-block;
   animation: icon-rotate linear infinite;
@@ -140,7 +190,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #f19563, #f65c83);
   border-radius: 4px;
 }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { taskAPI } from '../../services/api';
+import { taskAPI } from '../../services/betterAuthApi';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -110,7 +110,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
+    <div className="min-h-screen bg-background p-6 md:p-8 pt-20 md:pt-24">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -131,7 +131,7 @@ const Dashboard: React.FC = () => {
 
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card className="transition-all duration-200 hover:shadow-md hover:scale-[1.02]">
+          <Card className="transition-all duration-200 ">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Tasks</CardTitle>
               <FileCheck className="h-4 w-4 text-muted-foreground" />
@@ -144,20 +144,20 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="transition-all duration-200 hover:shadow-md hover:scale-[1.02]">
+          <Card className="transition-all duration-200 ">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Completed</CardTitle>
-              <CheckCircle className="h-4 w-4 text-green-600" />
+              <CheckCircle className="h-4 w-4 text-rose-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
+              <div className="text-2xl font-bold text-rose-600">{stats.completed}</div>
               <p className="text-xs text-muted-foreground">
                 {stats.completionRate}% completion rate
               </p>
             </CardContent>
           </Card>
 
-          <Card className="transition-all duration-200 hover:shadow-md hover:scale-[1.02]">
+          <Card className="transition-all duration-200 ">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">In Progress</CardTitle>
               <Clock className="h-4 w-4 text-orange-600" />
@@ -170,7 +170,7 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="transition-all duration-200 hover:shadow-md hover:scale-[1.02]">
+          <Card className="transition-all duration-200 ">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">High Priority</CardTitle>
               <AlertCircle className="h-4 w-4 text-red-600" />
@@ -211,7 +211,7 @@ const Dashboard: React.FC = () => {
                 <div className="text-xs text-muted-foreground">In Progress</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
+                <div className="text-2xl font-bold text-rose-600">{stats.completed}</div>
                 <div className="text-xs text-muted-foreground">Completed</div>
               </div>
             </div>
@@ -314,7 +314,7 @@ const Dashboard: React.FC = () => {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                    <CheckCircle className="h-12 w-12 text-rose-600 mx-auto mb-4" />
                   <p className="text-muted-foreground">Great job! No overdue tasks.</p>
                 </div>
               )}

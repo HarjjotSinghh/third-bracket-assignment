@@ -125,7 +125,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
     dispatch({ type: 'LOGIN_START' });
     try {
-      // @ts-expect-error - import.meta.env is not defined
       const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/verify`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -161,7 +160,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'LOGIN_START' });
 
     try {
-      // @ts-expect-error - import.meta.env is not defined
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
         email,
         password,
@@ -199,7 +197,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'LOGIN_START' });
 
     try {
-      // @ts-expect-error - import.meta.env is not defined
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, {
         name,
         email,

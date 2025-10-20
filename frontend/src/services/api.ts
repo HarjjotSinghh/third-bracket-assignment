@@ -1,7 +1,7 @@
 import axios from 'axios';
  
-// @ts-expect-error - import.meta.env is not defined
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
 // Create axios instance with default configuration
 const api = axios.create({

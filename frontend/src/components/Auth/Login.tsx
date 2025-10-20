@@ -7,7 +7,6 @@ import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Loader2, LogIn, Mail, Lock } from 'lucide-react';
-import { cn } from '../../lib/utils';
 
 interface FormData {
   email: string;
@@ -118,7 +117,7 @@ const Login: React.FC = () => {
               <Button
                 type="submit"
                 disabled={!formData.email || !formData.password || isLoading}
-                className="w-full transition-all duration-200 hover:scale-[1.02] bg-gradient-to-r from-orange-500 to-rose-600 hover:from-orange-600 hover:to-rose-700"
+                className="w-full transition-all duration-200 bg-gradient-to-r from-orange-500 to-rose-600 hover:from-orange-600 hover:to-rose-700"
               >
                 {isLoading ? (
                   <>
