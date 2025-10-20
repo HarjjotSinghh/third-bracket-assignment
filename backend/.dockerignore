@@ -17,3 +17,7 @@ dist
 *.swp
 *.swo
 *~
+tests
+*.test.ts
+*.test.js
+jest.config.js

@@ -19,7 +19,6 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",
-    "postinstall": "npm run build",
     "railway:build": "npm run build"
   },
   "keywords": [],
