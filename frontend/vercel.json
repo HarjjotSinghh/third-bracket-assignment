@@ -2,7 +2,7 @@
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist",
   "framework": "vite",
-  "installCommand": "npm ci --legacy-peer-deps",
+  "installCommand": "npm run install:vercel",
   "devCommand": "npm run dev",
   "env": {
     "NODE_ENV": "production"
