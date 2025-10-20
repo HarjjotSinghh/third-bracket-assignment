@@ -1,10 +1,9 @@
 {
-  "buildCommand": "npm run build:vercel",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "installCommand": "npm run install:vercel",
-  "devCommand": "npm run dev",
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }

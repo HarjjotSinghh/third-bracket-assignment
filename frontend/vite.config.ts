@@ -6,10 +6,16 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    port: process.env.PORT as unknown as number,
+  },
   resolve: {
     alias: {
-      'styled-system': path.resolve(__dirname, './styled-system'),
+      "styled-system": path.resolve(__dirname, "./styled-system"),
     },
   },
   plugins: [react(), tsconfigPaths(), tailwindcss()],
-})
+  define: {
+    __APP_ENV__: process.env.VITE_VERCEL_ENV,
+  },
+});

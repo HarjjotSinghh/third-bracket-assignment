@@ -6,10 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && panda build && vite build",
-    "build:vercel": "npm install @rollup/rollup-linux-x64-gnu --save-dev --legacy-peer-deps && tsc -b && panda build && vite build",
-    "install:vercel": "npm ci --legacy-peer-deps --omit=optional && npm install @rollup/rollup-linux-x64-gnu --save-dev --legacy-peer-deps",
     "postinstall": "panda codegen",
-    "prebuild": "npm rebuild",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
