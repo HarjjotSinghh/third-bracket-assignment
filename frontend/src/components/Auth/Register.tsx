@@ -65,15 +65,23 @@ const Register: React.FC = () => {
     }
 
     try {
-      await authClient.signUp.email({
+      const result = await authClient.signUp.email({
         name: formData.name,
         email: formData.email,
         password: formData.password,
       });
-      refetch(); // Get the latest session after registration
+
+      // Check if the result indicates success
+      if (result?.data?.user) {
+        console.log('Registration successful:', result.data.user);
+        // The session will be automatically updated by the useSession hook
+      }
     } catch (err) {
       // error is handled by error from useSession, but log for dev
       console.error('Registration error:', err);
+    } finally {
+      // Always refetch to get the latest session state
+      refetch();
     }
   };
 

@@ -49,17 +49,22 @@ const Login: React.FC = () => {
     }
 
     try {
-      await authClient.signIn.email(
-        {
-          email: formData.email,
-          rememberMe,
-          password: formData.password,
-        }
-      );
+      const result = await authClient.signIn.email({
+        email: formData.email,
+        rememberMe,
+        password: formData.password,
+      });
+
+      // Check if the result indicates success
+      if (result?.data?.user) {
+        console.log('Login successful:', result.data.user);
+      // The session will be automatically updated by the useSession hook
+      }
     } catch (error) {
       console.error('Login error:', error);
+      // The error will be handled by the useSession hook and displayed in the UI
     } finally {
-      // After attempt, refetch session to use the refetch function
+      // After attempt, refetch session to get the latest state
       refetch();
     }
   };

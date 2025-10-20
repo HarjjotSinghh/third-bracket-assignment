@@ -94,32 +94,41 @@ var Register = function () {
         return true;
     };
     var handleSubmit = function (e) { return __awaiter(void 0, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var result, err_1;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     e.preventDefault();
                     if (!validateForm()) {
                         return [2 /*return*/];
                     }
-                    _a.label = 1;
+                    _b.label = 1;
                 case 1:
-                    _a.trys.push([1, 3, , 4]);
+                    _b.trys.push([1, 3, 4, 5]);
                     return [4 /*yield*/, authClient.signUp.email({
                             name: formData.name,
                             email: formData.email,
                             password: formData.password,
                         })];
                 case 2:
-                    _a.sent();
-                    refetch(); // Get the latest session after registration
-                    return [3 /*break*/, 4];
+                    result = _b.sent();
+                    // Check if the result indicates success
+                    if ((_a = result === null || result === void 0 ? void 0 : result.data) === null || _a === void 0 ? void 0 : _a.user) {
+                        console.log('Registration successful:', result.data.user);
+                        // The session will be automatically updated by the useSession hook
+                    }
+                    return [3 /*break*/, 5];
                 case 3:
-                    err_1 = _a.sent();
+                    err_1 = _b.sent();
                     // error is handled by error from useSession, but log for dev
                     console.error('Registration error:', err_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 4:
+                    // Always refetch to get the latest session state
+                    refetch();
+                    return [7 /*endfinally*/];
+                case 5: return [2 /*return*/];
             }
         });
     }); };

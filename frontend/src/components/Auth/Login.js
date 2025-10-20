@@ -81,31 +81,37 @@ var Login = function () {
         setRememberMe(e.target.checked);
     };
     var handleSubmit = function (e) { return __awaiter(void 0, void 0, void 0, function () {
-        var error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var result, error_1;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     e.preventDefault();
                     if (!formData.email || !formData.password) {
                         return [2 /*return*/];
                     }
-                    _a.label = 1;
+                    _b.label = 1;
                 case 1:
-                    _a.trys.push([1, 3, 4, 5]);
+                    _b.trys.push([1, 3, 4, 5]);
                     return [4 /*yield*/, authClient.signIn.email({
                             email: formData.email,
                             rememberMe: rememberMe,
                             password: formData.password,
                         })];
                 case 2:
-                    _a.sent();
+                    result = _b.sent();
+                    // Check if the result indicates success
+                    if ((_a = result === null || result === void 0 ? void 0 : result.data) === null || _a === void 0 ? void 0 : _a.user) {
+                        console.log('Login successful:', result.data.user);
+                        // The session will be automatically updated by the useSession hook
+                    }
                     return [3 /*break*/, 5];
                 case 3:
-                    error_1 = _a.sent();
+                    error_1 = _b.sent();
                     console.error('Login error:', error_1);
                     return [3 /*break*/, 5];
                 case 4:
-                    // After attempt, refetch session to use the refetch function
+                    // After attempt, refetch session to get the latest state
                     refetch();
                     return [7 /*endfinally*/];
                 case 5: return [2 /*return*/];
