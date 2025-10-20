@@ -7,7 +7,7 @@ import { createServer } from 'http';
 
 import connectDB from './config/db';
 import { errorHandler, notFound } from './middleware/errorHandler';
-import { auth } from './lib/auth-memory';
+import { auth } from './lib/auth-express';
 import taskRoutes from './routes/tasks';
 
 // Load environment variables
