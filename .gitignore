@@ -128,3 +128,6 @@ backend/src/tests/integration/tasks.test.ts
 styled-system
 styled-system-studio
 .vercel
+
+# Local Netlify folder
+.netlify
