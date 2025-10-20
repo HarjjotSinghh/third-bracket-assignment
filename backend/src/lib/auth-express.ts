@@ -25,6 +25,9 @@ export const auth = betterAuth({
     // Production URLs from environment
     process.env.FRONTEND_URL,
     process.env.FRONTEND_PROD_URL,
+
+    // Specific production URLs
+    'https://third-bracket-assignment.vercel.app',
   ].filter((origin): origin is string => typeof origin === 'string'), // Remove any undefined values and ensure only strings
 
   database: mongodbAdapter(db, {

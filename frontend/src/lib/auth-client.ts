@@ -2,9 +2,6 @@ import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
   fetchOptions: {
-    headers: {
-      'access-control-allow-origin': '*',
-    },
     credentials: 'include',
   },
   baseURL:

@@ -71,14 +71,51 @@ app.use(
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    exposedHeaders: ['Authorization'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Accept',
+      'Origin',
+      'User-Agent',
+      'Cache-Control',
+      'Pragma',
+    ],
+    exposedHeaders: ['Authorization', 'Set-Cookie'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
 
 // Middleware
 app.use(helmet()); // Security headers
 app.use(morgan('combined')); // Logging
+
+// Handle preflight requests explicitly
+app.options('*', (req, res) => {
+  const origin = req.headers.origin;
+  const isAllowed = allowedOrigins.some((allowedOrigin) => {
+    if (typeof allowedOrigin === 'string') {
+      return origin === allowedOrigin;
+    }
+    if (allowedOrigin instanceof RegExp) {
+      return allowedOrigin.test(origin || '');
+    }
+    return false;
+  });
+
+  if (isAllowed) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, User-Agent, Cache-Control, Pragma');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Expose-Headers', 'Authorization, Set-Cookie');
+    res.status(204).send();
+  } else {
+    res.status(403).json({ error: 'CORS policy violation' });
+  }
+});
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
