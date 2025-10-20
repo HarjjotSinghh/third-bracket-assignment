@@ -71,25 +71,15 @@ export const auth = betterAuth({
       enabled: false,
     },
     useSecureCookies: process.env.NODE_ENV === 'production',
-    // Cookie configuration for production
-    // cookies: {
-    //   session_token: {
-    //     attributes: {
-    //       secure: process.env.NODE_ENV === 'production',
-    //       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    //       httpOnly: true,
-    //       path: '/',
-    //     },
-    //   },
-    //   session_data: {
-    //     attributes: {
-    //       secure: process.env.NODE_ENV === 'production',
-    //       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    //       httpOnly: true,
-    //       path: '/',
-    //     },
-    //   },
-    // },
+    // Configure cookies for cross-origin production deployment
+    defaultCookieAttributes: {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      httpOnly: true,
+      path: '/',
+      // Add partitioned attribute for third-party cookies in production
+      ...(process.env.NODE_ENV === 'production' && { partitioned: true }),
+    },
   },
 
   // Social providers (commented out for now)

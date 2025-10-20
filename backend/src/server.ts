@@ -81,7 +81,11 @@ app.use(
       'Cache-Control',
       'Pragma',
     ],
-    exposedHeaders: ['Authorization', 'Set-Cookie'],
+    exposedHeaders: [
+      'Authorization',
+      'Set-Cookie',
+      'Access-Control-Allow-Credentials',
+    ],
     preflightContinue: false,
     optionsSuccessStatus: 204,
   })
@@ -106,10 +110,19 @@ app.options('*', (req, res) => {
 
   if (isAllowed) {
     res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, User-Agent, Cache-Control, Pragma');
+    res.header(
+      'Access-Control-Allow-Methods',
+      'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+    );
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization, X-Requested-With, Accept, Origin, User-Agent, Cache-Control, Pragma'
+    );
     res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Expose-Headers', 'Authorization, Set-Cookie');
+    res.header(
+      'Access-Control-Expose-Headers',
+      'Authorization, Set-Cookie, Access-Control-Allow-Credentials'
+    );
     res.status(204).send();
   } else {
     res.status(403).json({ error: 'CORS policy violation' });

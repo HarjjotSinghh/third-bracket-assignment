@@ -62,6 +62,15 @@ export const auth = betterAuth({
       enabled: false,
     },
     useSecureCookies: process.env.NODE_ENV === 'production',
+    // Configure cookies for cross-origin production deployment
+    defaultCookieAttributes: {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      httpOnly: true,
+      path: '/',
+      // Add partitioned attribute for third-party cookies in production
+      ...(process.env.NODE_ENV === 'production' && { partitioned: true }),
+    },
   },
 
   // Social providers (commented out for now)
