@@ -4,11 +4,6 @@
   "framework": "vite",
   "installCommand": "npm install --legacy-peer-deps --ignore-scripts=false",
   "devCommand": "npm run dev",
-  "functions": {
-    "app/api/**/*.ts": {
-      "runtime": "nodejs20.x@vercel"
-    }
-  },
   "env": {
     "NODE_ENV": "production"
   }
