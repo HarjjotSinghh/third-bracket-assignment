@@ -33,7 +33,7 @@ const LandingPage: React.FC = () => {
       <header className="relative overflow-hidden">
         <div className={cn("inset-0 bg-gradient-to-r from-orange-600/10 to-rose-600/10", scrolled ? 'fixed top-6 h-[88px] max-h-[88px] py-4 rounded-xl flex items-center justify-center bg-transparent' : 'absolute w-full h-full dark:bg-neutral-900/50 ')} />
         {scrolled && (<div className='relative z-10 flex items-center justify-center'>
-          <nav className={`fixed w-full top-0 h-[88px] max-h-[88px] z-50 flex items-center justify-between p-6 max-w-7xl mx-auto transition-all duration-300 ${scrolled ? 'py-4 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-lg rounded-xl' : ''}`}>
+          <nav className={`fixed w-full top-6 h-[88px] max-h-[88px] z-50 flex items-center justify-between p-6 max-w-7xl mx-auto transition-all duration-300 ${scrolled ? 'py-4 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-lg rounded-xl' : ''}`}>
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-rose-500 rounded-lg flex items-center justify-center">
               <Target className="w-5 h-5 text-white" />
