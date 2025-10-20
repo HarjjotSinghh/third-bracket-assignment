@@ -2,7 +2,7 @@
 
 # Build script for Railway deployment
 echo "Installing dependencies..."
-npm ci
+npm install
 
 echo "Building TypeScript..."
 npm run build
