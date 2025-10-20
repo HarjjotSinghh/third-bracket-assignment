@@ -4,7 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import vercel from 'vite-plugin-vercel';
-import netlify from "@netlify/vite-plugin";
+// import netlify from "@netlify/vite-plugin";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -16,7 +16,9 @@ export default defineConfig({
       "styled-system": path.resolve(__dirname, "./styled-system"),
     },
   },
-  plugins: [react(), tsconfigPaths(), tailwindcss(), vercel(), netlify()],
+  plugins: [react(), tsconfigPaths(), tailwindcss(), vercel(),
+    //  netlify()
+    ],
   define: {
     __APP_ENV__: process.env.VITE_VERCEL_ENV,
   },

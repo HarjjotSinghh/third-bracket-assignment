@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback } from '../ui/avatar';
@@ -11,15 +11,37 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { LogOut, LayoutDashboard, CheckSquare, Settings } from 'lucide-react';
-import { useAuth } from '../../context/BetterAuthContext';
+import { authClient } from '../../lib/auth-client';
 
 const Navbar: React.FC = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  // Use session hook from authClient for session/user state
+  const { data: session, isPending, isRefetching, refetch } = authClient.useSession();
+  const user = session?.user;
+  const isAuthenticated = !!user;
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  useEffect(() => {
+    // Could add any relevant user session effect here if needed
+  }, [session]);
+
+  const handleLogout = async () => {
+    try {
+      await authClient.$fetch('/sign-out', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      // Session will update via useSession hook after refetch
+    } catch (error) {
+      // Optionally handle/log error
+      console.error('Logout failed:', error);
+    } finally {
+      // Always refetch session after logout
+      refetch();
+      // Navigate to login - if not already redirected by auth/session
+      navigate('/login');
+    }
   };
 
   return (
@@ -60,7 +82,7 @@ const Navbar: React.FC = () => {
                 >
                   <Avatar className="h-10 w-10 bg-gradient-to-br from-orange-500 to-rose-600 shadow-md  transition-all duration-200">
                     <AvatarFallback className="text-white font-bold">
-                      {user.name.charAt(0).toUpperCase()}
+                      {user.name?.charAt(0)?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -100,6 +122,7 @@ const Navbar: React.FC = () => {
                 <DropdownMenuItem
                   onClick={handleLogout}
                   className="cursor-pointer text-red-600 focus:text-red-600"
+                  disabled={isPending || isRefetching}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Logout</span>
@@ -114,6 +137,7 @@ const Navbar: React.FC = () => {
               size="sm"
               asChild
                 className="transition-all duration-200"
+                disabled={isPending || isRefetching}
             >
               <Link to="/login">Login</Link>
             </Button>
@@ -121,6 +145,7 @@ const Navbar: React.FC = () => {
               size="sm"
               asChild
                 className="bg-gradient-to-r from-orange-500 to-rose-600 hover:from-orange-600 hover:to-rose-700 transition-all duration-200"
+                disabled={isPending || isRefetching}
             >
               <Link to="/register">Register</Link>
             </Button>

@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import { MongoClient } from 'mongodb';
 import { config } from 'dotenv';
+import { openAPI } from 'better-auth/plugins';
 
 config({ path: ['./.env', './../.env', './../../.env', './../../../.env'] });
 
@@ -54,7 +55,7 @@ export const auth = betterAuth({
       enabled: false,
     },
   },
-
+  plugins: [openAPI()],
   // Advanced configuration
   advanced: {
     generateId: false, // Use default ID generation

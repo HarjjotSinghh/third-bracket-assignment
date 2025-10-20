@@ -5,8 +5,9 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
-import { Loader2, UserPlus, Mail, Lock, User } from 'lucide-react';
+import { Loader2, UserPlus, Mail, Lock, UserIcon } from 'lucide-react';
 import { authClient } from "../../lib/auth-client";
+import { User } from '../../context/AuthContext';
 
 interface FormData {
   name: string;
@@ -65,15 +66,21 @@ const Register: React.FC = () => {
     }
 
     try {
-      const result = await authClient.signUp.email({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
+      const result = await authClient.$fetch("/sign-up/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
       });
 
       // Check if the result indicates success
-      if (result?.data?.user) {
-        console.log('Registration successful:', result.data.user);
+      if ((result?.data as { user?: User })?.user) {
+        console.log('Registration successful:', (result?.data as { user: User }).user);
         // The session will be automatically updated by the useSession hook
       }
     } catch (err) {
@@ -107,7 +114,7 @@ const Register: React.FC = () => {
                   Full Name
                 </Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
                     id="name"
                     name="name"

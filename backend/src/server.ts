@@ -151,9 +151,19 @@ app.get('/health', (req, res) => {
 // API routes
 import taskRoutes from './routes/tasks';
 import authRoutes from './routes/auth';
+import { apiReference } from '@scalar/express-api-reference';
 
 app.use('/api/tasks', taskRoutes);
 app.use('/api/auth', authRoutes);
+app.use(
+  '/api/reference',
+  apiReference({
+    theme: 'red',
+    // Put your OpenAPI url here:
+    url: '/api/auth/open-api',
+  })
+);
+
 
 // 404 handler
 app.use(notFound);

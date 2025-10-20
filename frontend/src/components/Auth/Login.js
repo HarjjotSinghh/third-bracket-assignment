@@ -82,32 +82,43 @@ var Login = function () {
     };
     var handleSubmit = function (e) { return __awaiter(void 0, void 0, void 0, function () {
         var result, error_1;
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     e.preventDefault();
                     if (!formData.email || !formData.password) {
                         return [2 /*return*/];
                     }
-                    _b.label = 1;
+                    _c.label = 1;
                 case 1:
-                    _b.trys.push([1, 3, 4, 5]);
-                    return [4 /*yield*/, authClient.signIn.email({
-                            email: formData.email,
-                            rememberMe: rememberMe,
-                            password: formData.password,
+                    _c.trys.push([1, 3, 4, 5]);
+                    return [4 /*yield*/, authClient.$fetch("/sign-up/email", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                email: formData.email,
+                                rememberMe: rememberMe,
+                                password: formData.password,
+                            }),
                         })];
                 case 2:
-                    result = _b.sent();
+                    result = _c.sent();
+                    // const result = await authClient.signIn.email({
+                    //   email: formData.email,
+                    //   rememberMe,
+                    //   password: formData.password,
+                    // });
                     // Check if the result indicates success
                     if ((_a = result === null || result === void 0 ? void 0 : result.data) === null || _a === void 0 ? void 0 : _a.user) {
-                        console.log('Login successful:', result.data.user);
+                        console.log('Login successful:', (_b = result === null || result === void 0 ? void 0 : result.data) === null || _b === void 0 ? void 0 : _b.user);
                         // The session will be automatically updated by the useSession hook
                     }
                     return [3 /*break*/, 5];
                 case 3:
-                    error_1 = _b.sent();
+                    error_1 = _c.sent();
                     console.error('Login error:', error_1);
                     return [3 /*break*/, 5];
                 case 4:

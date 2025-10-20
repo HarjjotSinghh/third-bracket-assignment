@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Alert, AlertDescription } from '../ui/alert';
 import { Loader2, LogIn, Mail, Lock, RefreshCw } from 'lucide-react';
 import { authClient } from '../../lib/auth-client';
+import { User } from '../../context/AuthContext';
 
 interface FormData {
   email: string;
@@ -49,15 +50,26 @@ const Login: React.FC = () => {
     }
 
     try {
-      const result = await authClient.signIn.email({
-        email: formData.email,
-        rememberMe,
-        password: formData.password,
+      const result = await authClient.$fetch("/sign-up/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          rememberMe,
+          password: formData.password,
+        }),
       });
+      // const result = await authClient.signIn.email({
+      //   email: formData.email,
+      //   rememberMe,
+      //   password: formData.password,
+      // });
 
       // Check if the result indicates success
-      if (result?.data?.user) {
-        console.log('Login successful:', result.data.user);
+      if ((result?.data as { user: User })?.user) {
+        console.log('Login successful:', (result?.data as { user: User })?.user);
       // The session will be automatically updated by the useSession hook
       }
     } catch (error) {

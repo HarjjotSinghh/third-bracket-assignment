@@ -55,7 +55,15 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 import { createAuthClient } from "better-auth/react";
-// Custom fetch function to handle JSON serialization issues
+// Utility function to get headers dynamically
+function getAuthHeaders() {
+    // You can extend this with logic to add custom headers as needed, e.g., tokens from storage
+    return {
+        'Content-Type': 'application/json',
+        // Example: Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+    };
+}
+// Custom fetch function to handle JSON serialization issues and set headers
 var customFetch = function (url_1) {
     var args_1 = [];
     for (var _i = 1; _i < arguments.length; _i++) {
@@ -70,27 +78,25 @@ var customFetch = function (url_1) {
                     modifiedOptions = __assign({}, options);
                     // Ensure proper JSON serialization for non-GET requests
                     if (options.method && options.method !== 'GET' && options.body) {
-                        // If body is an object (not already a string or FormData), stringify it
-                        if (typeof options.body === 'object' && !(options.body instanceof FormData) && !(options.body instanceof URLSearchParams)) {
+                        if (typeof options.body === 'object' &&
+                            !(options.body instanceof FormData) &&
+                            !(options.body instanceof URLSearchParams)) {
                             modifiedOptions.body = JSON.stringify(options.body);
-                            modifiedOptions.headers = __assign(__assign({}, modifiedOptions.headers), { 'Content-Type': 'application/json' });
-                            // Debug logging for development
+                            modifiedOptions.headers = __assign(__assign({}, getAuthHeaders()), modifiedOptions.headers);
                             if (import.meta.env.DEV) {
                                 console.log('Auth request body serialized:', modifiedOptions.body);
                             }
                         }
                     }
-                    // Ensure credentials are included
+                    // Always include credentials and merge headers
                     modifiedOptions.credentials = 'include';
-                    // Ensure proper headers
-                    modifiedOptions.headers = __assign({ 'Content-Type': 'application/json' }, modifiedOptions.headers);
+                    modifiedOptions.headers = __assign(__assign({}, getAuthHeaders()), modifiedOptions.headers);
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, fetch(url, modifiedOptions)];
                 case 2:
                     response = _a.sent();
-                    // Debug logging for development
                     if (import.meta.env.DEV) {
                         console.log('Auth response status:', response.status);
                     }
@@ -107,14 +113,10 @@ var customFetch = function (url_1) {
 export var authClient = createAuthClient({
     fetchOptions: {
         credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        // headers: getAuthHeaders(),
     },
     baseURL: import.meta.env.VITE_BETTER_AUTH_API_BASE_URL ||
         "http://localhost:3000/api/auth",
-    // You can add plugins here if needed
     plugins: [],
-    // Use custom fetch to ensure proper JSON serialization
     fetch: customFetch,
 });

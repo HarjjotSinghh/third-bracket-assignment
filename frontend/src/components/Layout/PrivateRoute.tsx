@@ -1,18 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { authClient } from '../../lib/auth-client';
+import { User } from '../../context/AuthContext';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  // Use better-auth hook from authClient (like Login/Register)
-  const { data: session, isPending, isRefetching } = authClient.useSession();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-  const isLoading = isPending || isRefetching;
-  const isAuthenticated = !!session?.user;
+  useEffect(() => {
+    let mounted = true;
+    const checkAuth = async () => {
+      try {
+        const response = await authClient.$fetch('/get-session', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        // Check if response has data and user property
+        const user = (response?.data as { user: User })?.user;
+        if (mounted) {
+          setIsAuthenticated(!!user);
+        }
+      } catch (error: unknown) {
+        console.error('Error checking authentication:', error);
+        if (mounted) {
+          setIsAuthenticated(false);
+        }
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+    checkAuth();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   if (isLoading) {
     return (
@@ -24,6 +54,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
       </div>
     );
   }
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

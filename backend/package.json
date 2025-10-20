@@ -25,6 +25,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@scalar/express-api-reference": "^0.8.22",
     "bcryptjs": "^3.0.2",
     "better-auth": "^1.1.1",
     "cors": "^2.8.5",
