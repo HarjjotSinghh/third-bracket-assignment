@@ -26,13 +26,61 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
-app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:5173',
-    'http://localhost:5174', // Allow the current dev server port
-  ],
-  credentials: true,
-}));
+const allowedOrigins = [
+  // Development URLs
+  'http://localhost:5173', // Vite dev server (default)
+  'http://localhost:5174', // Vite dev server (alternative port)
+  'http://localhost:4173', // Vite production preview
+  'http://localhost:3000', // Backend dev server
+  'http://localhost:3001', // Alternative backend port
+
+  // Production URLs
+  process.env.FRONTEND_URL, // Custom frontend URL from env
+  process.env.FRONTEND_PROD_URL, // Production frontend URL from env
+
+  // Specific production URLs
+  'https://third-bracket-assignment.vercel.app',
+  'https://third-bracket-assignment-production.up.railway.app',
+
+  // Vercel deployment URLs (pattern matching)
+  /^https:\/\/.*\.vercel\.app$/, // Any Vercel app
+  /^https:\/\/.*\.vercel\.app\/.*$/, // Any Vercel app with path
+
+  // Other common production patterns
+  /^https:\/\/.*\.netlify\.app$/, // Netlify deployments
+  /^https:\/\/.*\.github\.io$/, // GitHub Pages
+].filter(Boolean); // Remove any undefined values
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      // Check if origin is in allowed list
+      const isAllowed = allowedOrigins.some((allowedOrigin) => {
+        if (typeof allowedOrigin === 'string') {
+          return origin === allowedOrigin;
+        }
+        if (allowedOrigin instanceof RegExp) {
+          return allowedOrigin.test(origin);
+        }
+        return false;
+      });
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS blocked request from origin: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Authorization'],
+  })
+);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

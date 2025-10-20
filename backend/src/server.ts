@@ -32,6 +32,10 @@ const allowedOrigins = [
   process.env.FRONTEND_URL, // Custom frontend URL from env
   process.env.FRONTEND_PROD_URL, // Production frontend URL from env
 
+  // Specific production URLs
+  'https://third-bracket-assignment.vercel.app',
+  'https://third-bracket-assignment-production.up.railway.app',
+
   // Vercel deployment URLs (pattern matching)
   /^https:\/\/.*\.vercel\.app$/, // Any Vercel app
   /^https:\/\/.*\.vercel\.app\/.*$/, // Any Vercel app with path

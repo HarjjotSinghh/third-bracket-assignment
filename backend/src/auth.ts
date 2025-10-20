@@ -18,6 +18,10 @@ export const auth = betterAuth({
     // Production URLs from environment
     process.env.FRONTEND_URL,
     process.env.FRONTEND_PROD_URL,
+
+    // Specific production URLs
+    'https://third-bracket-assignment.vercel.app',
+    'https://third-bracket-assignment-production.up.railway.app',
   ].filter((origin): origin is string => typeof origin === 'string'), // Remove any undefined values and ensure only strings
 
   // Database configuration - using memory adapter for development
@@ -67,6 +71,25 @@ export const auth = betterAuth({
       enabled: false,
     },
     useSecureCookies: process.env.NODE_ENV === 'production',
+    // Cookie configuration for production
+    cookies: {
+      session_token: {
+        attributes: {
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+          httpOnly: true,
+          path: '/',
+        },
+      },
+      session_data: {
+        attributes: {
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+          httpOnly: true,
+          path: '/',
+        },
+      },
+    },
   },
 
   // Social providers (commented out for now)
